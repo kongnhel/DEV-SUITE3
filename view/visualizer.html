@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Logic Visualizer 2026 | Future Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;700&family=Space+Grotesk:wght@300;500;700&family=Fira+Code&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --matrix-green: #00ff41;
+            --cyber-purple: #bc13fe;
+        }
+        body {
+            font-family: 'Kantumruy Pro', sans-serif;
+            background: #020617;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* Animated Grid Background */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(0, 255, 65, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 255, 65, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at 50% 50%, black, transparent 80%);
+            z-index: -1;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 65, 0.1);
+            border-radius: 24px;
+        }
+
+        .btn-logic {
+            background: linear-gradient(135deg, #059669 0%, #00ff41 100%);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+            transition: all 0.3s ease;
+        }
+        .btn-logic:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.4);
+            transform: translateY(-2px);
+        }
+
+        #diagramContainer {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            border: 1px dashed rgba(0, 255, 65, 0.2);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #059669; border-radius: 10px; }
+
+        .shimmer-text {
+            background: linear-gradient(90deg, #00ff41, #bc13fe, #00ff41);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <div class="bg-grid"></div>
+
+    <nav class="sticky top-0 z-50 glass-panel !rounded-none border-t-0 border-x-0 border-b-white/5 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-black tracking-tighter shimmer-text">AI DEV SUITE</h1>
+            <div class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest">
+                <a href="/" class="text-slate-400 hover:text-white transition">Reviewer</a>
+                <a href="/culture" class="text-slate-400 hover:text-white transition">Culture</a>
+                <a href="/visualizer" class="text-emerald-400 border-b-2 border-emerald-400 pb-1">Visualizer</a>
+                <a href="/study-buddy" class="text-slate-400 hover:text-yellow-500 transition">Study Buddy</a>
+            </div>
+            <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto p-6 md:p-10">
+        <header class="text-center mb-16">
+            <h2 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">Logic <span class="text-emerald-500 underline decoration-double">Visualizer</span></h2>
+            <p class="text-slate-400 max-w-2xl mx-auto">បំប្លែងភាពស្មុគស្មាញនៃកូដ ឱ្យក្លាយជាផែនទី Logic ដ៏ស្រស់ស្អាតបំផុតនៃឆ្នាំ ២០២៦</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            <div class="lg:col-span-5 space-y-6">
+                <div class="glass-panel p-8 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10">
+                        <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+                    </div>
+                    
+                    <label class="block text-xs font-black text-emerald-500 uppercase tracking-widest mb-4">Source Code Input</label>
+                    <textarea 
+                        id="codeInput" 
+                        class="w-full h-80 bg-black/40 border border-white/10 rounded-2xl p-6 focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-mono text-sm leading-relaxed text-emerald-50"
+                        placeholder="ឧទាហរណ៍៖ function buildKingdom() { if(money > 100) return 'Rich'; }"></textarea>
+                    
+                    <button 
+                        onclick="visualize()" 
+                        id="btnAction"
+                        class="btn-logic w-full mt-6 py-4 rounded-xl font-black text-lg text-white tracking-widest uppercase flex justify-center items-center gap-3">
+                        <span>Generate Flow</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7">
+                <div class="glass-panel p-2 min-h-[580px] flex flex-col">
+                    <div class="p-4 border-b border-white/5 flex justify-between items-center">
+                        <span class="text-xs font-black text-slate-500 uppercase tracking-widest">Logic Diagram Output</span>
+                        <div id="controlPanel" class="hidden flex gap-2">
+                            <button onclick="downloadSVG()" class="text-[10px] bg-white/5 hover:bg-white/10 px-4 py-1.5 rounded-full border border-white/10 transition-all font-bold">EXPORT_SVG</button>
+                        </div>
+                    </div>
+
+                    <div class="flex-grow flex items-center justify-center p-6">
+                        <div id="loading" class="hidden text-center">
+                            <div class="relative w-20 h-20 mx-auto">
+                                <div class="absolute inset-0 border-4 border-emerald-500/20 rounded-full"></div>
+                                <div class="absolute inset-0 border-4 border-t-emerald-500 rounded-full animate-spin"></div>
+                            </div>
+                            <p class="mt-6 text-emerald-500 font-mono text-sm animate-pulse tracking-tighter">MAPPING_NEURAL_LOGIC...</p>
+                        </div>
+
+                        <div id="resultContainer" class="hidden w-full h-full">
+                            <div id="diagramContainer" class="p-6 overflow-auto max-h-[500px]">
+                                <div id="mermaidGraph" class="mermaid flex justify-center"></div>
+                            </div>
+                            <div class="mt-4 p-4 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
+                                <p class="text-xs text-slate-400 italic">💡 គន្លឹះ៖ ប្អូនអាច Copy រូបនេះ</p>
+                            </div>
+                        </div>
+
+                        <div id="placeholder" class="text-center space-y-4 opacity-30">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 002-2h-2a2 2 0 00-2 2" />
+                            </svg>
+                            <p class="text-sm font-mono uppercase tracking-widest">Waiting for data...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        
+        // Config Mermaid ឱ្យខ្មៅងងឹតដូចមេឃយប់
+        mermaid.initialize({ 
+            startOnLoad: false, 
+            theme: 'dark',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+        });
+
+        async function visualize() {
+            const code = document.getElementById("codeInput").value;
+            if (!code) return Swal.fire({ icon: 'warning', title: 'ដាក់កូដមកប្អូន!', text: 'បងគ្មានមន្តអាគមគូររូបចេញពីខ្យល់ទេណា!', background: '#0f172a', color: '#fff' });
+
+            document.getElementById("placeholder").classList.add("hidden");
+            document.getElementById("loading").classList.remove("hidden");
+            document.getElementById("resultContainer").classList.add("hidden");
+            document.getElementById("controlPanel").classList.add("hidden");
+            document.getElementById("btnAction").disabled = true;
+            document.getElementById("btnAction").style.opacity = "0.5";
+
+            socket.emit("visualize_logic", { code });
+        }
+
+        socket.on("visualize_result", async (data) => {
+            const { mermaidCode } = data;
+            const container = document.getElementById("mermaidGraph");
+            
+            document.getElementById("loading").classList.add("hidden");
+            document.getElementById("resultContainer").classList.remove("hidden");
+            document.getElementById("controlPanel").classList.remove("hidden");
+            document.getElementById("btnAction").disabled = false;
+            document.getElementById("btnAction").style.opacity = "1";
+
+            container.removeAttribute("data-processed");
+            container.innerHTML = mermaidCode;
+            
+            try {
+                await mermaid.run({ nodes: [container] });
+            } catch (err) {
+                container.innerHTML = "<div class='text-red-400 p-6 bg-red-500/10 rounded-xl border border-red-500/20 text-center'>💀 អូយ! កូដនេះស្មុគស្មាញដល់ថ្នាក់បងវិលមុខគូរអត់ចេញទេ!</div>";
+            }
+        });
+
+        function downloadSVG() {
+            const svg = document.querySelector("#diagramContainer svg");
+            if (!svg) return;
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `logic_flow_${Date.now()}.svg`;
+            link.click();
+            
+            Swal.fire({ icon: 'success', title: 'រួចរាល់!', text: 'រូប Logic ត្រូវបានទម្លាក់ចូលក្នុងម៉ាស៊ីនប្អូនហើយ!', timer: 1500, showConfirmButton: false, background: '#0f172a', color: '#fff' });
+        }
+
+        socket.on('error_occured', (msg) => {
+            Swal.fire({ icon: 'error', title: 'Error', text: msg });
+            document.getElementById("loading").classList.add("hidden");
+            document.getElementById("placeholder").classList.remove("hidden");
+            document.getElementById("btnAction").disabled = false;
+            document.getElementById("btnAction").style.opacity = "1";
+        });
+    </script>
+</body>
+</html>
