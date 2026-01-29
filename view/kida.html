@@ -25,6 +25,7 @@
         color: #e2e8f0;
         overflow-x: hidden;
       }
+
       #neural-bg {
         position: fixed;
         top: 0;
@@ -34,22 +35,37 @@
         z-index: -1;
         opacity: 0.15;
       }
+
+      /* Navbar Style */
       .nav-glass {
-        background: rgba(15, 23, 42, 0.9);
+        background: rgba(3, 7, 18, 0.7);
         backdrop-filter: blur(20px);
         border-bottom: 1px solid rgba(0, 242, 255, 0.1);
       }
+      .nav-link {
+        position: relative;
+        color: #94a3b8;
+        transition: all 0.3s ease;
+      }
+      .nav-link.active {
+        color: var(--primary);
+        border-bottom: 2px solid var(--primary);
+      }
+
+      /* Responsive Neural Card */
       .neural-card {
         background: rgba(15, 23, 42, 0.6);
-        backdrop-filter: blur(16px);
+        backdrop-filter: blur(20px);
         border: 1px solid rgba(0, 242, 255, 0.15);
-        border-radius: 28px;
+        border-radius: 20px; /* Mobile Default */
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
-      .neural-card:hover {
-        border-color: var(--primary);
-        box-shadow: 0 0 40px rgba(0, 242, 255, 0.05);
+      @media (min-width: 768px) {
+        .neural-card {
+          border-radius: 32px;
+        } /* Desktop Upgrade */
       }
+
       .shimmer-text {
         background: linear-gradient(90deg, #fff, var(--primary), #fff);
         background-size: 200% auto;
@@ -62,15 +78,24 @@
           background-position: 200% center;
         }
       }
+
+      /* Hide scrollbar for horizontal mobile nav */
       .no-scrollbar::-webkit-scrollbar {
         display: none;
       }
 
-      /* New Neural Badge Styling */
-      .neural-badge {
-        background: rgba(0, 242, 255, 0.15);
-        border: 1px solid rgba(0, 242, 255, 0.4);
-        backdrop-filter: blur(10px);
+      /* Smooth Loading Animation */
+      .pulse-glow {
+        animation: pulseGlow 2s infinite;
+      }
+      @keyframes pulseGlow {
+        0%,
+        100% {
+          box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
+        }
+        50% {
+          box-shadow: 0 0 30px rgba(0, 242, 255, 0.3);
+        }
       }
     </style>
   </head>
@@ -78,132 +103,149 @@
   <body class="min-h-screen">
     <canvas id="neural-bg"></canvas>
 
-    <nav class="sticky top-0 z-[100] nav-glass px-6 py-4">
+    <nav class="sticky top-0 z-[100] nav-glass px-4 py-3 md:px-6 md:py-4">
       <div class="max-w-7xl mx-auto flex justify-between items-center">
         <div
-          class="flex items-center gap-3 cursor-pointer"
+          class="flex items-center gap-2 cursor-pointer"
           onclick="window.location.href = '/'"
         >
           <div
-            class="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg shadow-cyan-500/20"
+            class="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg"
           >
-            <span class="text-black font-black text-xl italic">AI</span>
+            <span class="text-black font-black text-sm md:text-xl italic"
+              >AI</span
+            >
           </div>
           <h1
-            class="text-xl font-black tracking-tighter shimmer-text uppercase"
+            class="text-lg md:text-2xl font-black tracking-tighter shimmer-text"
           >
             DEV SUITE
           </h1>
         </div>
-        <div
-          class="hidden md:flex gap-10 text-[10px] font-bold uppercase tracking-[0.2em]"
-        >
-          <a href="/" class="hover:text-cyan-400 transition-colors">Reviewer</a>
-          <a href="/culture" class="hover:text-cyan-400 transition-colors"
-            >Culture</a
-          >
-          <a href="/visualizer" class="hover:text-cyan-400 transition-colors"
-            >Visualizer</a
-          >
-          <a href="/study-buddy" class="hover:text-cyan-400 transition-colors"
-            >Study Buddy</a
-          >
-          <a href="#" class="text-cyan-400 border-b-2 border-cyan-400 pb-1"
-            >K-IDA</a
-          >
-        </div>
         <div class="flex items-center gap-2">
-          <span class="h-2 w-2 rounded-full bg-cyan-500 animate-pulse"></span>
           <span
-            class="text-[8px] text-cyan-500 font-mono tracking-widest uppercase"
-            >Sync_Ready</span
+            class="text-[8px] md:text-[10px] font-mono text-cyan-500 uppercase"
+            >Archive_Sync: Online</span
           >
+          <div class="h-2 w-2 rounded-full bg-cyan-500 animate-pulse"></div>
         </div>
+      </div>
+
+      <div
+        class="flex md:hidden gap-6 mt-4 overflow-x-auto pb-1 text-[10px] font-bold uppercase tracking-widest no-scrollbar border-t border-white/5 pt-3"
+      >
+        <a href="/" class="text-slate-400 whitespace-nowrap">Reviewer</a>
+        <a href="/culture" class="text-slate-400 whitespace-nowrap">Culture</a>
+        <a href="/visualizer" class="text-slate-400 whitespace-nowrap"
+          >Visualizer</a
+        >
+        <a href="/study-buddy" class="text-slate-400 whitespace-nowrap"
+          >Study Buddy</a
+        >
+        <a
+          href="/kida"
+          class="text-cyan-400 border-b border-cyan-400 whitespace-nowrap uppercase"
+          >K-IDA</a
+        >
+      </div>
+
+      <div
+        class="hidden md:flex justify-center gap-10 text-xs font-bold uppercase tracking-widest mt-[-20px]"
+      >
+        <a href="/" class="nav-link">Reviewer</a>
+        <a href="/culture" class="nav-link">Culture</a>
+        <a href="/visualizer" class="nav-link">Visualizer</a>
+        <a href="/study-buddy" class="nav-link">Study Buddy</a>
+        <a href="/kida" class="nav-link active">K-IDA</a>
       </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto p-6 md:p-12">
-      <header class="text-center mb-16">
+    <main class="max-w-7xl mx-auto p-4 md:p-12">
+      <header class="text-center mb-10 md:mb-16 relative">
+        <div
+          class="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 md:w-64 md:h-64 bg-cyan-500/10 blur-[100px] -z-10"
+        ></div>
         <h2
-          class="text-6xl md:text-9xl font-black tracking-tighter shimmer-text italic uppercase"
+          class="text-5xl md:text-8xl font-black tracking-tighter shimmer-text italic uppercase"
         >
-          Evolution
+          K-IDA
         </h2>
         <p
-          class="mt-4 text-slate-500 font-mono tracking-[0.5em] text-[10px] uppercase"
+          class="mt-4 text-slate-500 font-mono tracking-[0.2em] md:tracking-[0.4em] text-[8px] md:text-[10px] uppercase px-4"
         >
-          Khmer Intelligent Document Archive
+          Khmer Intelligent Document Archive | Memory Sync Protocol
         </p>
       </header>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <section class="lg:col-span-5 space-y-8">
-          <div class="neural-card p-10 relative overflow-hidden">
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 md:gap-12 items-start">
+        <section class="xl:col-span-5 space-y-8">
+          <div class="neural-card p-8 md:p-12 pulse-glow">
             <h3
               class="text-xs font-black text-cyan-400 uppercase tracking-widest mb-8 flex items-center gap-3"
             >
-              <span class="h-1 w-4 bg-cyan-500 rounded-full"></span> 01. Ingest
-              Data Unit
+              <span class="h-1 w-4 bg-cyan-500 rounded-full"></span> 01.
+              Document Ingest
             </h3>
+
             <div
               id="dropZone"
-              class="border-2 border-dashed border-white/5 rounded-3xl p-12 text-center cursor-pointer hover:border-cyan-500/50 hover:bg-cyan-500/5 transition-all duration-500 group"
+              class="border-2 border-dashed border-white/10 rounded-[24px] p-10 md:p-16 text-center cursor-pointer hover:border-cyan-500/50 hover:bg-cyan-500/5 transition-all duration-500 group relative overflow-hidden"
             >
               <div
                 class="text-5xl mb-6 group-hover:scale-110 transition-transform"
               >
                 📂
               </div>
-              <p class="text-sm text-slate-400 font-medium">
-                Drop PDF source here or click to browse
+              <p
+                class="text-sm md:text-base text-slate-400 font-medium uppercase tracking-tighter"
+              >
+                Drop PDF unit here or click to scan
               </p>
               <input type="file" id="fileInput" class="hidden" accept=".pdf" />
             </div>
 
             <div
               id="textPreview"
-              class="hidden neural-card p-6 mt-8 border-t-2 border-emerald-500/30 bg-emerald-500/5 animate-in slide-in-from-bottom-5"
+              class="hidden neural-card p-6 mt-8 bg-emerald-500/5 border-emerald-500/20"
             >
-              <h4
-                class="text-[9px] font-black text-emerald-400 uppercase mb-3 flex justify-between"
-              >
-                <span>Extracted Memory Sample</span>
-                <span id="pageCount" class="text-white">0 Pages</span>
-              </h4>
+              <div class="flex justify-between items-center mb-4">
+                <span
+                  class="text-[10px] font-black text-emerald-400 uppercase tracking-widest"
+                  >Memory Sample Extracted</span
+                >
+                <span
+                  id="pageCount"
+                  class="text-[10px] font-mono bg-emerald-500/20 px-2 py-1 rounded text-white italic"
+                  >0 Pages</span
+                >
+              </div>
               <div
                 id="previewContent"
-                class="text-[10px] text-slate-400 h-32 overflow-y-auto no-scrollbar italic leading-relaxed"
+                class="text-xs text-slate-400 h-32 overflow-y-auto no-scrollbar italic leading-relaxed border-t border-white/5 pt-4"
               ></div>
-            </div>
-
-            <div
-              id="fileStatus"
-              class="mt-6 text-[10px] font-black text-emerald-400 hidden uppercase tracking-[0.3em] text-center animate-pulse"
-            >
-              [ MEMORY_SYNCED_SUCCESSFULLY ]
             </div>
           </div>
         </section>
 
-        <section class="lg:col-span-7 space-y-8">
-          <div class="neural-card p-10">
+        <section class="xl:col-span-7 space-y-8">
+          <div class="neural-card p-8 md:p-12">
             <h3
               class="text-xs font-black text-slate-400 uppercase tracking-widest mb-8 flex items-center gap-3"
             >
               <span class="h-1 w-4 bg-slate-500 rounded-full"></span> 02. Neural
-              Query Workspace
+              Query Hub
             </h3>
-            <div class="flex gap-4">
+            <div class="flex flex-col md:flex-row gap-4">
               <input
                 type="text"
                 id="userQuery"
-                class="flex-1 bg-black/40 border border-white/5 rounded-2xl px-8 py-5 outline-none focus:border-cyan-500 transition-all text-sm font-medium"
+                class="flex-1 bg-black/40 border border-white/5 rounded-2xl md:rounded-full px-8 py-5 outline-none focus:border-cyan-500 transition-all text-base font-medium text-white"
                 placeholder="តើប្អូនចង់ដឹងអ្វីពីក្នុងឯកសារនេះ?"
               />
               <button
                 onclick="askKIDA()"
                 id="btnAsk"
-                class="bg-cyan-500 hover:bg-cyan-400 text-black px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-[0_0_30px_rgba(0,242,255,0.2)]"
+                class="bg-cyan-400 hover:bg-cyan-300 text-black px-12 py-5 rounded-2xl md:rounded-full font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-xl"
               >
                 Execute
               </button>
@@ -212,70 +254,68 @@
 
           <div
             id="responseContainer"
-            class="hidden animate-in fade-in zoom-in-95 duration-700"
+            class="hidden animate-in slide-in-from-bottom-5 duration-700"
           >
             <div
-              class="neural-card p-12 border-l-8 border-cyan-500 bg-cyan-500/5 relative overflow-hidden"
+              class="neural-card p-10 md:p-14 border-l-8 border-cyan-500 bg-cyan-500/5 relative overflow-hidden"
             >
               <div
                 id="pageBadge"
-                class="absolute top-8 right-10 neural-badge px-5 py-3 rounded-2xl flex items-center gap-4 opacity-0 transition-all duration-1000 transform translate-y-[-20px] shadow-lg shadow-cyan-500/10"
+                class="absolute top-8 right-10 bg-cyan-500/10 border border-cyan-500/30 px-5 py-3 rounded-2xl flex items-center gap-4 opacity-0 transition-all duration-1000 transform translate-y-[-10px]"
               >
                 <div
-                  class="h-3 w-3 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(0,242,255,1)]"
+                  class="h-3 w-3 rounded-full bg-cyan-400 animate-pulse"
                 ></div>
                 <div class="flex flex-col">
                   <span
-                    class="text-[9px] font-black text-cyan-400 uppercase tracking-[0.2em]"
-                    >Source Unit</span
+                    class="text-[8px] font-black text-cyan-500 uppercase tracking-widest"
+                    >Source_Unit</span
                   >
                   <span
                     id="pageSource"
-                    class="text-base font-black text-white tracking-tighter uppercase leading-none mt-1"
+                    class="text-base font-black text-white leading-none"
                     >N/A</span
                   >
                 </div>
               </div>
 
               <div
-                class="text-[10px] font-black tracking-[0.4em] text-cyan-400/50 uppercase mb-8 flex items-center gap-4"
+                class="text-[9px] font-black tracking-[0.4em] text-cyan-400/50 uppercase mb-8"
               >
-                <span class="h-[1px] w-12 bg-cyan-500/20"></span>
-                Diagnostic Extraction Result
+                Intelligence Extraction Result
               </div>
-
               <div
                 id="aiAnswer"
-                class="text-xl md:text-3xl font-light text-white italic leading-[1.6] pr-24"
+                class="text-xl md:text-3xl font-light text-white italic leading-[1.6] md:pr-20"
               ></div>
             </div>
           </div>
 
           <div
             id="loading"
-            class="hidden neural-card p-24 flex flex-col items-center justify-center"
+            class="hidden neural-card p-32 flex flex-col items-center justify-center"
           >
             <div
-              class="w-16 h-16 border-2 border-cyan-500/10 border-t-cyan-500 rounded-full animate-spin"
+              class="w-16 h-16 border-4 border-cyan-500/10 border-t-cyan-500 rounded-full animate-spin"
             ></div>
             <p
               class="mt-8 text-cyan-500 font-mono text-[10px] tracking-[0.5em] uppercase animate-pulse"
             >
-              Analyzing_Neural_Paths...
+              Scanning_Memory_Blocks...
             </p>
           </div>
         </section>
       </div>
     </main>
 
-    <footer
-      class="mt-20 py-12 border-t border-white/5 text-center text-slate-600"
-    >
-      <p class="text-[10px] font-bold uppercase tracking-[0.3em] mb-3">
-        AI DevSuite Evolution &copy; 2026
+    <footer class="mt-20 py-12 border-t border-white/5 text-center px-6">
+      <p
+        class="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-600 mb-2"
+      >
+        AI DevSuite Protocol &copy; 2026
       </p>
-      <p class="text-[8px] font-mono uppercase opacity-40">
-        System_Protocol_V4_Full_Secure
+      <p class="text-[8px] font-mono text-cyan-500/30">
+        NEURAL_DOCUMENT_ARCHIVE_v4.2
       </p>
     </footer>
 
@@ -292,7 +332,7 @@
       fileInput.onchange = (e) => handleFile(e.target.files[0]);
 
       async function handleFile(file) {
-        if (!file || file.type !== "application/pdf")
+        if (!file || file.type !== "application/pdf") {
           return Swal.fire({
             icon: "error",
             title: "Format Error",
@@ -300,6 +340,7 @@
             background: "#030712",
             color: "#00f2ff",
           });
+        }
 
         pdfPagesData = [];
         const reader = new FileReader();
@@ -311,23 +352,21 @@
             const page = await pdf.getPage(i);
             const content = await page.getTextContent();
             const text = content.items.map((s) => s.str).join(" ");
-            pdfPagesData.push({ page: i, text: text }); // ✅ រក្សាទុកលេខទំព័រ
+            pdfPagesData.push({ page: i, text: text });
           }
 
-          // ✅ បង្ហាញ Preview និង Status ភ្លាមៗ
           document.getElementById("previewContent").innerText = pdfPagesData
-            .slice(0, 5)
-            .map((p) => `[Page ${p.page}]: ${p.text.substring(0, 150)}...`)
+            .slice(0, 3)
+            .map((p) => `[Unit ${p.page}]: ${p.text.substring(0, 150)}...`)
             .join("\n\n");
           document.getElementById("pageCount").innerText =
-            `${pdf.numPages} Pages`;
+            `${pdf.numPages} Units Sync`;
           document.getElementById("textPreview").classList.remove("hidden");
-          document.getElementById("fileStatus").classList.remove("hidden");
 
           Swal.fire({
             icon: "success",
             title: "Memory Sync",
-            text: `បណ្ណាល័យ ${pdf.numPages} ទំព័រ ត្រូវបានបញ្ចូល!`,
+            text: `ឯកសារ ${pdf.numPages} ទំព័រ ត្រូវបានបំប្លែងជា Neural Data!`,
             background: "#030712",
             color: "#00f2ff",
           });
@@ -337,19 +376,18 @@
 
       function askKIDA() {
         const query = document.getElementById("userQuery").value.trim();
-        if (!query || pdfPagesData.length === 0)
+        if (!query || pdfPagesData.length === 0) {
           return Swal.fire({
             icon: "warning",
-            title: "Buffer Empty",
-            text: "បញ្ចូលឯកសារ និងសំណួរជាមុនសិន!",
+            title: "Data Missing",
+            text: "បញ្ចូលឯកសារ និងសំណួរជាមុនសិនប្អូន!",
             background: "#030712",
             color: "#00f2ff",
           });
+        }
 
         document.getElementById("loading").classList.remove("hidden");
         document.getElementById("responseContainer").classList.add("hidden");
-
-        // ✅ បញ្ជូនទិន្នន័យទៅ AI
         socket.emit("ask_kida", {
           userQuery: query,
           pages: pdfPagesData.slice(0, 50),
@@ -359,19 +397,16 @@
       socket.on("kida_result", (data) => {
         document.getElementById("loading").classList.add("hidden");
         document.getElementById("responseContainer").classList.remove("hidden");
-
-        // ១. បង្ហាញចម្លើយ
         typeWriter("aiAnswer", data.answer);
 
-        // ២. បង្ហាញ Neural Badge (Page Source)
         const badge = document.getElementById("pageBadge");
         const source = document.getElementById("pageSource");
         if (data.page_found) {
-          source.innerText = data.page_found;
+          source.innerText = "PAGE_" + data.page_found;
           setTimeout(() => {
-            badge.classList.remove("opacity-0", "translate-y-[-20px]");
+            badge.classList.remove("opacity-0", "translate-y-[-10px]");
             badge.classList.add("opacity-100", "translate-y-0");
-          }, 800);
+          }, 1000);
         }
       });
 
@@ -383,13 +418,13 @@
           if (i < text.length) {
             el.innerHTML += text.charAt(i);
             i++;
-            setTimeout(type, 12);
+            setTimeout(type, 15);
           }
         }
         type();
       }
 
-      // Professional Background Animation
+      // Neural Star BG Animation
       const canvas = document.getElementById("neural-bg");
       const ctx = canvas.getContext("2d");
       let dots = [];
@@ -397,12 +432,12 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         dots = [];
-        for (let i = 0; i < 50; i++)
+        for (let i = 0; i < 45; i++)
           dots.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            vx: (Math.random() - 0.5) * 0.3,
-            vy: (Math.random() - 0.5) * 0.3,
+            vx: (Math.random() - 0.5) * 0.2,
+            vy: (Math.random() - 0.5) * 0.2,
           });
       }
       function draw() {
@@ -415,10 +450,10 @@
           if (d.x < 0 || d.x > canvas.width) d.vx *= -1;
           if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
           ctx.beginPath();
-          ctx.arc(d.x, d.y, 0.8, 0, Math.PI * 2);
+          ctx.arc(d.x, d.y, 0.7, 0, Math.PI * 2);
           ctx.fill();
           dots.forEach((d2) => {
-            if (Math.hypot(d.x - d2.x, d.y - d2.y) < 200) {
+            if (Math.hypot(d.x - d2.x, d.y - d2.y) < 180) {
               ctx.beginPath();
               ctx.moveTo(d.x, d.y);
               ctx.lineTo(d2.x, d2.y);
