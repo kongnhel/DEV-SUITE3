@@ -36,11 +36,11 @@
         width: 100%;
         height: 100%;
         z-index: -1;
-        opacity: 0.3;
+        opacity: 0.2; /* Reduced for better performance on mobile */
       }
 
       .nav-glass {
-        background: rgba(15, 23, 42, 0.8);
+        background: rgba(15, 23, 42, 0.9);
         backdrop-filter: blur(20px);
         border-bottom: 1px solid rgba(0, 242, 255, 0.1);
       }
@@ -53,41 +53,25 @@
       .nav-link.active {
         color: var(--primary);
       }
-      .nav-link.active::after {
-        content: "";
-        position: absolute;
-        bottom: -4px;
-        left: 0;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--primary),
-          transparent
-        );
-        box-shadow: 0 2px 10px rgba(0, 242, 255, 0.8);
-      }
 
       .neural-card {
-        background: rgba(15, 23, 42, 0.4);
+        background: rgba(15, 23, 42, 0.6);
         backdrop-filter: blur(16px);
-        border: 1px solid rgba(0, 242, 255, 0.15); /* លៃតម្រូវ opacity បន្តិច */
-        border-radius: 32px;
+        border: 1px solid rgba(0, 242, 255, 0.15);
+        border-radius: 20px; /* Smaller radius for mobile */
+      }
+      @media (min-width: 768px) {
+        .neural-card { border-radius: 32px; }
       }
 
-      /* ផ្នែក Input ដែលប្អូនចង់បានឱ្យធំ */
       .big-input {
         background: rgba(0, 0, 0, 0.4) !important;
         border: 1px solid rgba(255, 255, 255, 0.05) !important;
-        font-size: 1.125rem !important; /* 18px */
-        line-height: 1.75rem;
+        font-size: 1rem !important; 
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
-      .big-input:focus {
-        border-color: var(--primary) !important;
-        box-shadow: 0 0 25px rgba(0, 242, 255, 0.15);
-        background: rgba(0, 0, 0, 0.6) !important;
+      @media (min-width: 768px) {
+        .big-input { font-size: 1.125rem !important; }
       }
 
       .shimmer-text {
@@ -97,202 +81,119 @@
         -webkit-text-fill-color: transparent;
         animation: shine 4s linear infinite;
       }
-      @keyframes shine {
-        to {
-          background-position: 200% center;
-        }
-      }
+      @keyframes shine { to { background-position: 200% center; } }
+
+      /* Hide scrollbar but keep functionality */
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
   </head>
 
   <body class="min-h-screen">
     <canvas id="neural-bg"></canvas>
 
-    <nav class="sticky top-0 z-[100] nav-glass px-6 py-4">
+    <nav class="sticky top-0 z-[100] nav-glass px-4 py-3 md:px-6 md:py-4">
       <div class="max-w-7xl mx-auto flex justify-between items-center">
-        <div
-          class="flex items-center gap-3 cursor-pointer"
-          onclick="window.location.href = '/'"
-        >
-          <div
-            class="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg"
-          >
-            <span class="text-black font-black text-xl italic">AI</span>
+        <div class="flex items-center gap-2 md:gap-3 cursor-pointer" onclick="window.location.href = '/'">
+          <div class="h-8 w-8 md:h-10 md:w-10 rounded-lg md:rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg">
+            <span class="text-black font-black text-lg md:text-xl italic">AI</span>
           </div>
-          <h1
-            class="text-xl font-black tracking-tighter shimmer-text hidden sm:block"
-          >
-            DEV SUITE
-          </h1>
-        </div>
-
-        <div
-          class="hidden md:flex items-center gap-10 text-[10px] font-bold uppercase tracking-[0.2em]"
-        >
-          <a href="/" class="nav-link active" id="nav-reviewer">Reviewer</a>
-          <a href="/culture" class="nav-link" id="nav-culture">Culture</a>
-          <a href="/visualizer" class="nav-link" id="nav-visualizer"
-            >Visualizer</a
-          >
-            <a href="/study-buddy" class="nav-link" id="nav-study-buddy">Study Buddy</a>
+          <h1 class="text-lg md:text-xl font-black tracking-tighter shimmer-text">DEV SUITE</h1>
         </div>
 
         <div class="flex items-center gap-2">
-          <span
-            class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"
-          ></span>
-          <span class="text-[9px] text-emerald-400 font-mono">CORE_ONLINE</span>
+          <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-[8px] md:text-[9px] text-emerald-400 font-mono">CORE_ONLINE</span>
         </div>
+      </div>
+      
+      <div class="flex md:hidden gap-5 mt-3 overflow-x-auto no-scrollbar pb-1 text-[10px] font-bold uppercase tracking-widest">
+        <a href="/" class="text-cyan-400 border-b border-cyan-400">Reviewer</a>
+        <a href="/culture" class="text-slate-400">Culture</a>
+        <a href="/visualizer" class="text-slate-400">Visualizer</a>
+        <a href="/study-buddy" class="text-slate-400">Study Buddy</a>
+      </div>
+      
+      <div class="hidden md:flex justify-center gap-10 text-[10px] font-bold uppercase tracking-[0.2em] mt-[-20px]">
+        <a href="/" class="nav-link active">Reviewer</a>
+        <a href="/culture" class="nav-link">Culture</a>
+        <a href="/visualizer" class="nav-link">Visualizer</a>
+        <a href="/study-buddy" class="nav-link">Study Buddy</a>
       </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto p-6 md:p-10">
-      <header class="text-center mb-16">
-        <h2
-          class="text-6xl md:text-8xl font-black tracking-tighter shimmer-text italic"
-        >
-          AI REVIEWER
+    <main class="max-w-7xl mx-auto p-4 md:p-10">
+      <header class="text-center mb-10 md:mb-16">
+        <h2 class="text-5xl md:text-8xl font-black tracking-tighter shimmer-text italic uppercase">
+          AI Reviewer
         </h2>
-        <p
-          class="mt-4 text-slate-500 font-mono tracking-[0.5em] text-[10px] uppercase"
-        >
+        <p class="mt-2 md:mt-4 text-slate-500 font-mono tracking-[0.3em] md:tracking-[0.5em] text-[8px] md:text-[10px] uppercase">
           Neural Diagnostic Environment
         </p>
       </header>
 
-      <div class="grid grid-cols-1 xl:grid-cols-12 gap-10">
-        <section
-          class="xl:col-span-6 space-y-8"
-          aria-labelledby="workspace-input-heading"
-        >
-          <div class="neural-card p-10">
-            <div class="flex items-center gap-3 mb-8">
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 md:gap-10">
+        <section class="xl:col-span-6 space-y-6 md:space-y-8">
+          <div class="neural-card p-6 md:p-10">
+            <div class="flex items-center gap-3 mb-6 md:mb-8">
               <div class="h-4 w-1 bg-cyan-500 rounded-full"></div>
-              <h3
-                id="workspace-input-heading"
-                class="text-sm font-black text-slate-400 uppercase tracking-widest"
-              >
-                Workspace Input
-              </h3>
+              <h3 class="text-xs md:text-sm font-black text-slate-400 uppercase tracking-widest">Workspace Input</h3>
             </div>
 
-            <div class="space-y-8">
+            <div class="space-y-6">
               <div>
-                <label
-                  class="text-[10px] font-bold text-cyan-500/60 uppercase tracking-widest mb-3 block ml-1"
-                  >User Intent / Sentiment</label
-                >
-                <textarea
-                  id="userComment"
-                  class="w-full big-input rounded-3xl p-6 h-40 outline-none transition-all resize-none"
-                  placeholder="ឧទាហរណ៍៖ កូដនេះសរសេរទាំងឈឺក្បាល..."
-                ></textarea>
+                <label class="text-[9px] md:text-[10px] font-bold text-cyan-500/60 uppercase tracking-widest mb-2 block ml-1">User Intent / Sentiment</label>
+                <textarea id="userComment" class="w-full big-input rounded-2xl md:rounded-3xl p-4 md:p-6 h-28 md:h-40 outline-none resize-none" placeholder="ឧទាហរណ៍៖ កូដនេះសរសេរទាំងឈឺក្បាល..."></textarea>
               </div>
 
               <div>
-                <label
-                  class="text-[10px] font-bold text-cyan-500/60 uppercase tracking-widest mb-3 block ml-1"
-                  >The Broken Source Code</label
-                >
+                <label class="text-[9px] md:text-[10px] font-bold text-cyan-500/60 uppercase tracking-widest mb-2 block ml-1">The Broken Source Code</label>
                 <div class="relative group">
-                  <textarea
-                    id="code"
-                    class="w-full h-[550px] big-input rounded-3xl p-8 outline-none font-mono text-base"
-                    placeholder="// Paste your code here..."
-                  ></textarea>
-                  <div
-                    class="absolute bottom-4 right-6 text-[10px] font-mono text-slate-700 pointer-events-none group-hover:text-cyan-800 transition-colors"
-                  >
-                    UTF-8 SOURCE_UNIT
-                  </div>
+                  <textarea id="code" class="w-full h-80 md:h-[550px] big-input rounded-2xl md:rounded-3xl p-4 md:p-8 outline-none font-mono text-sm md:text-base" placeholder="// Paste your code here..."></textarea>
+                  <div class="absolute bottom-4 right-6 text-[8px] md:text-[10px] font-mono text-slate-700 pointer-events-none hidden sm:block">UTF-8 SOURCE_UNIT</div>
                 </div>
               </div>
 
-              <button
-                onclick="sendCode()"
-                id="btnSend"
-                class="w-full py-6 rounded-3xl font-black text-lg text-black bg-cyan-400 hover:bg-cyan-300 hover:scale-[1.01] active:scale-95 transition-all shadow-[0_0_30px_rgba(0,242,255,0.2)] uppercase tracking-widest flex justify-center items-center gap-4"
-              >
+              <button onclick="sendCode()" id="btnSend" class="w-full py-4 md:py-6 rounded-2xl md:rounded-3xl font-black text-base md:text-lg text-black bg-cyan-400 hover:bg-cyan-300 active:scale-95 transition-all shadow-lg uppercase tracking-widest flex justify-center items-center gap-3">
                 <span>Execute Neural Link</span>
-                <svg
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2.5" />
-                </svg>
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2.5" /></svg>
               </button>
             </div>
           </div>
         </section>
 
         <section class="xl:col-span-6" aria-labelledby="ai-output-heading">
-          <h2 id="ai-output-heading" class="sr-only">AI Output Section</h2>
-          <div
-            id="loading"
-            class="hidden neural-card p-40 flex flex-col items-center justify-center"
-          >
-            <div
-              class="w-20 h-20 border-2 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin"
-            ></div>
-            <p
-              class="mt-8 text-cyan-500 font-mono text-[10px] tracking-widest animate-pulse"
-            >
-              ANALYZING_LOGIC...
-            </p>
+          <div id="loading" class="hidden neural-card p-20 md:p-40 flex flex-col items-center justify-center">
+            <div class="w-12 h-12 md:w-20 md:h-20 border-2 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin"></div>
+            <p class="mt-6 text-cyan-500 font-mono text-[8px] md:text-[10px] tracking-widest animate-pulse uppercase">Analyzing_Logic...</p>
           </div>
 
-          <div
-            id="aiSection"
-            class="hidden space-y-8 animate-in fade-in duration-500"
-          >
-            <div class="neural-card p-10 border-l-8 border-cyan-500">
-              <div
-                id="aiMood"
-                class="text-[10px] font-black tracking-[0.3em] uppercase mb-4 text-cyan-400"
-              ></div>
-              <div
-                id="aiJoke"
-                class="text-3xl md:text-4xl font-light text-white italic leading-tight"
-              ></div>
+          <div id="aiSection" class="hidden space-y-6 md:space-y-8 animate-in fade-in duration-500">
+            <div class="neural-card p-6 md:p-10 border-l-4 md:border-l-8 border-cyan-500">
+              <div id="aiMood" class="text-[8px] md:text-[10px] font-black tracking-[0.2em] md:tracking-[0.3em] uppercase mb-3 text-cyan-400"></div>
+              <div id="aiJoke" class="text-xl md:text-4xl font-light text-white italic leading-tight"></div>
             </div>
 
-            <div class="neural-card p-10">
-              <h4
-                class="text-cyan-500 font-bold uppercase tracking-widest text-[10px] mb-6"
-              >
-                Diagnostic Summary
-              </h4>
-              <div
-                id="aiReview"
-                class="text-slate-400 leading-relaxed space-y-5 font-light text-xl"
-              ></div>
+            <div class="neural-card p-6 md:p-10">
+              <h4 class="text-cyan-500 font-bold uppercase tracking-widest text-[8px] md:text-[10px] mb-4 md:mb-6">Diagnostic Summary</h4>
+              <div id="aiReview" class="text-slate-400 leading-relaxed space-y-4 font-light text-base md:text-xl"></div>
             </div>
 
             <div class="neural-card overflow-hidden">
-              <div
-                class="px-10 py-5 bg-white/5 border-b border-white/5 flex justify-between items-center"
-              >
-                <span
-                  class="text-[10px] font-black tracking-widest text-slate-500"
-                  >OPTIMIZED_VERSION.js</span
-                >
-                <button
-                  onclick="copyCode()"
-                  class="text-xs font-bold text-cyan-400 hover:text-white transition-colors"
-                >
-                  COPY_UNIT
-                </button>
+              <div class="px-6 py-4 md:px-10 md:py-5 bg-white/5 border-b border-white/5 flex justify-between items-center">
+                <span class="text-[8px] md:text-[10px] font-black tracking-widest text-slate-500">OPTIMIZED_VERSION.js</span>
+                <button onclick="copyCode()" class="text-[10px] md:text-xs font-bold text-cyan-400 hover:text-white">COPY_UNIT</button>
               </div>
-              <pre
-                class="p-10 overflow-x-auto"
-              ><code id="fixedCode" class="language-javascript text-base"></code></pre>
+              <pre class="p-6 md:p-10 overflow-x-auto"><code id="fixedCode" class="language-javascript text-sm md:text-base"></code></pre>
             </div>
           </div>
         </section>
       </div>
     </main>
+
+    <footer class="mt-10 md:mt-20 py-10 border-t border-white/5 text-center text-slate-600 text-[8px] md:text-[10px] tracking-widest uppercase">
+        &copy; 2026 AI DevSuite - Secure Coding Protocol
+    </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script>
@@ -310,6 +211,7 @@
             text: "ដាក់កូដមកអាអូន កុំទុកប្រអប់ទំនេរ!",
             background: "#030712",
             color: "#00f2ff",
+            confirmButtonColor: "#00f2ff"
           });
 
         loading.classList.remove("hidden");
@@ -328,15 +230,12 @@
         btnSend.disabled = false;
         btnSend.style.opacity = "1";
 
-        document.getElementById("aiMood").innerText =
-          "Neural Sentiment: " + res.sentiment;
+        document.getElementById("aiMood").innerText = "Neural Sentiment: " + res.sentiment;
         typeWriter("aiJoke", "“" + res.humorous_response + "”");
-        document.getElementById("aiReview").innerHTML =
-          res.technical_review.replace(/\n/g, "<br>");
+        document.getElementById("aiReview").innerHTML = res.technical_review.replace(/\n/g, "<br>");
 
         const codeContainer = document.getElementById("fixedCode");
-        codeContainer.textContent =
-          res.fixed_code || "// Logic verified. No modifications required.";
+        codeContainer.textContent = res.fixed_code || "// Logic verified. No modifications required.";
         Prism.highlightElement(codeContainer);
       });
 
@@ -355,9 +254,7 @@
       }
 
       function copyCode() {
-        navigator.clipboard.writeText(
-          document.getElementById("fixedCode").textContent,
-        );
+        navigator.clipboard.writeText(document.getElementById("fixedCode").textContent);
         Swal.fire({
           icon: "success",
           title: "Copied",
@@ -370,7 +267,7 @@
         });
       }
 
-      // Background Animation
+      // Background Animation (Throttled for performance)
       const canvas = document.getElementById("neural-bg");
       const ctx = canvas.getContext("2d");
       let dots = [];
@@ -378,7 +275,8 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         dots = [];
-        for (let i = 0; i < 60; i++)
+        const count = window.innerWidth < 768 ? 30 : 60;
+        for (let i = 0; i < count; i++)
           dots.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
@@ -400,7 +298,7 @@
           ctx.fill();
           dots.forEach((d2) => {
             let dist = Math.hypot(d.x - d2.x, d.y - d2.y);
-            if (dist < 180) {
+            if (dist < 150) {
               ctx.beginPath();
               ctx.moveTo(d.x, d.y);
               ctx.lineTo(d2.x, d2.y);

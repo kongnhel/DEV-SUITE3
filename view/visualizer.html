@@ -29,16 +29,19 @@
             background-image: 
                 linear-gradient(to right, rgba(0, 255, 65, 0.05) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(0, 255, 65, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
-            mask-image: radial-gradient(circle at 50% 50%, black, transparent 80%);
+            background-size: 30px 30px; /* Smaller grid for mobile */
+            mask-image: radial-gradient(circle at 50% 50%, black, transparent 90%);
             z-index: -1;
         }
 
         .glass-panel {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(0, 255, 65, 0.1);
-            border-radius: 24px;
+            border-radius: 20px;
+        }
+        @media (min-width: 768px) {
+            .glass-panel { border-radius: 24px; }
         }
 
         .btn-logic {
@@ -46,20 +49,14 @@
             box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
             transition: all 0.3s ease;
         }
-        .btn-logic:hover {
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.4);
-            transform: translateY(-2px);
-        }
+        .btn-logic:active { transform: scale(0.95); }
 
         #diagramContainer {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 16px;
             border: 1px dashed rgba(0, 255, 65, 0.2);
+            overflow: auto; /* Allow horizontal scroll for large diagrams */
         }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #059669; border-radius: 10px; }
 
         .shimmer-text {
             background: linear-gradient(90deg, #00ff41, #bc13fe, #00ff41);
@@ -69,86 +66,91 @@
             animation: shine 5s linear infinite;
         }
         @keyframes shine { to { background-position: 200% center; } }
+
+        /* Hide scrollbar but keep functionality */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 
 <body class="min-h-screen">
     <div class="bg-grid"></div>
 
-    <nav class="sticky top-0 z-50 glass-panel !rounded-none border-t-0 border-x-0 border-b-white/5 px-6 py-4">
+    <nav class="sticky top-0 z-50 glass-panel !rounded-none border-t-0 border-x-0 border-b-white/5 px-4 py-3 md:px-6 md:py-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-black tracking-tighter shimmer-text">AI DEV SUITE</h1>
-            <div class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest">
-                <a href="/" class="text-slate-400 hover:text-white transition">Reviewer</a>
-                <a href="/culture" class="text-slate-400 hover:text-white transition">Culture</a>
-                <a href="/visualizer" class="text-emerald-400 border-b-2 border-emerald-400 pb-1">Visualizer</a>
-                <a href="/study-buddy" class="text-slate-400 hover:text-yellow-500 transition">Study Buddy</a>
-            </div>
+            <h1 class="text-xl md:text-2xl font-black tracking-tighter shimmer-text">AI DEV SUITE</h1>
             <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
+        </div>
+        <div class="flex md:hidden gap-5 mt-3 overflow-x-auto no-scrollbar pb-1 text-[10px] font-bold uppercase tracking-widest">
+            <a href="/" class="text-slate-400">Reviewer</a>
+            <a href="/culture" class="text-slate-400">Culture</a>
+            <a href="/visualizer" class="text-emerald-400 border-b border-emerald-400">Visualizer</a>
+            <a href="/study-buddy" class="text-slate-400">Study Buddy</a>
+        </div>
+        <div class="hidden md:flex justify-center gap-10 text-xs font-bold uppercase tracking-widest mt-[-20px]">
+            <a href="/" class="text-slate-400 hover:text-white transition">Reviewer</a>
+            <a href="/culture" class="text-slate-400 hover:text-white transition">Culture</a>
+            <a href="/visualizer" class="text-emerald-400 border-b-2 border-emerald-400 pb-1">Visualizer</a>
+            <a href="/study-buddy" class="text-slate-400 hover:text-yellow-500 transition">Study Buddy</a>
         </div>
     </nav>
 
-    <div class="max-w-7xl mx-auto p-6 md:p-10">
-        <header class="text-center mb-16">
+    <div class="max-w-7xl mx-auto p-4 md:p-10">
+        <header class="text-center mb-10 md:mb-16">
             <h2 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">Logic <span class="text-emerald-500 underline decoration-double">Visualizer</span></h2>
-            <p class="text-slate-400 max-w-2xl mx-auto">បំប្លែងភាពស្មុគស្មាញនៃកូដ ឱ្យក្លាយជាផែនទី Logic ដ៏ស្រស់ស្អាតបំផុតនៃឆ្នាំ ២០២៦</p>
+            <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base px-2">បំប្លែងភាពស្មុគស្មាញនៃកូដ ឱ្យក្លាយជាផែនទី Logic ដ៏ស្រស់ស្អាតបំផុត</p>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10 items-start">
             <div class="lg:col-span-5 space-y-6">
-                <div class="glass-panel p-8 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-10">
-                        <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-                    </div>
-                    
-                    <label class="block text-xs font-black text-emerald-500 uppercase tracking-widest mb-4">Source Code Input</label>
+                <div class="glass-panel p-6 md:p-8 relative overflow-hidden">
+                    <label class="block text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4">Source Code Input</label>
                     <textarea 
                         id="codeInput" 
-                        class="w-full h-80 bg-black/40 border border-white/10 rounded-2xl p-6 focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-mono text-sm leading-relaxed text-emerald-50"
+                        class="w-full h-48 md:h-80 bg-black/40 border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-mono text-xs md:text-sm leading-relaxed text-emerald-50"
                         placeholder="ឧទាហរណ៍៖ function buildKingdom() { if(money > 100) return 'Rich'; }"></textarea>
                     
                     <button 
                         onclick="visualize()" 
                         id="btnAction"
-                        class="btn-logic w-full mt-6 py-4 rounded-xl font-black text-lg text-white tracking-widest uppercase flex justify-center items-center gap-3">
+                        class="btn-logic w-full mt-4 md:mt-6 py-4 rounded-xl font-black text-base md:text-lg text-white tracking-widest uppercase flex justify-center items-center gap-3">
                         <span>Generate Flow</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                     </button>
                 </div>
             </div>
 
             <div class="lg:col-span-7">
-                <div class="glass-panel p-2 min-h-[580px] flex flex-col">
+                <div class="glass-panel p-2 min-h-[400px] md:min-h-[580px] flex flex-col">
                     <div class="p-4 border-b border-white/5 flex justify-between items-center">
-                        <span class="text-xs font-black text-slate-500 uppercase tracking-widest">Logic Diagram Output</span>
+                        <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Logic Diagram Output</span>
                         <div id="controlPanel" class="hidden flex gap-2">
-                            <button onclick="downloadSVG()" class="text-[10px] bg-white/5 hover:bg-white/10 px-4 py-1.5 rounded-full border border-white/10 transition-all font-bold">EXPORT_SVG</button>
+                            <button onclick="downloadSVG()" class="text-[9px] bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full border border-white/10 transition-all font-bold">EXPORT_SVG</button>
                         </div>
                     </div>
 
-                    <div class="flex-grow flex items-center justify-center p-6">
+                    <div class="flex-grow flex items-center justify-center p-4 md:p-6 overflow-hidden">
                         <div id="loading" class="hidden text-center">
-                            <div class="relative w-20 h-20 mx-auto">
+                            <div class="relative w-16 h-16 md:w-20 md:h-20 mx-auto">
                                 <div class="absolute inset-0 border-4 border-emerald-500/20 rounded-full"></div>
                                 <div class="absolute inset-0 border-4 border-t-emerald-500 rounded-full animate-spin"></div>
                             </div>
-                            <p class="mt-6 text-emerald-500 font-mono text-sm animate-pulse tracking-tighter">MAPPING_NEURAL_LOGIC...</p>
+                            <p class="mt-6 text-emerald-500 font-mono text-xs animate-pulse tracking-tighter">MAPPING_NEURAL_LOGIC...</p>
                         </div>
 
                         <div id="resultContainer" class="hidden w-full h-full">
-                            <div id="diagramContainer" class="p-6 overflow-auto max-h-[500px]">
-                                <div id="mermaidGraph" class="mermaid flex justify-center"></div>
+                            <div id="diagramContainer" class="p-4 md:p-6 no-scrollbar">
+                                <div id="mermaidGraph" class="mermaid flex justify-center scale-90 md:scale-100"></div>
                             </div>
                             <div class="mt-4 p-4 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
-                                <p class="text-xs text-slate-400 italic">💡 គន្លឹះ៖ ប្អូនអាច Copy រូបនេះ</p>
+                                <p class="text-[10px] md:text-xs text-slate-400 italic">💡 គន្លឹះ៖ ប្អូនអាច Copy រូបនេះ ឬ Export ជា SVG</p>
                             </div>
                         </div>
 
                         <div id="placeholder" class="text-center space-y-4 opacity-30">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 md:h-20 md:h-20 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 002-2h-2a2 2 0 00-2 2" />
                             </svg>
-                            <p class="text-sm font-mono uppercase tracking-widest">Waiting for data...</p>
+                            <p class="text-[10px] font-mono uppercase tracking-widest">Waiting for data...</p>
                         </div>
                     </div>
                 </div>
@@ -159,7 +161,6 @@
     <script>
         const socket = io();
         
-        // Config Mermaid ឱ្យខ្មៅងងឹតដូចមេឃយប់
         mermaid.initialize({ 
             startOnLoad: false, 
             theme: 'dark',
@@ -169,7 +170,14 @@
 
         async function visualize() {
             const code = document.getElementById("codeInput").value;
-            if (!code) return Swal.fire({ icon: 'warning', title: 'ដាក់កូដមកប្អូន!', text: 'បងគ្មានមន្តអាគមគូររូបចេញពីខ្យល់ទេណា!', background: '#0f172a', color: '#fff' });
+            if (!code) return Swal.fire({ 
+                icon: 'warning', 
+                title: 'ដាក់កូដមកប្អូន!', 
+                text: 'បងគ្មានមន្តអាគមគូររូបចេញពីខ្យល់ទេណា!', 
+                background: '#0f172a', 
+                color: '#fff',
+                confirmButtonColor: '#059669'
+            });
 
             document.getElementById("placeholder").classList.add("hidden");
             document.getElementById("loading").classList.remove("hidden");
@@ -197,7 +205,7 @@
             try {
                 await mermaid.run({ nodes: [container] });
             } catch (err) {
-                container.innerHTML = "<div class='text-red-400 p-6 bg-red-500/10 rounded-xl border border-red-500/20 text-center'>💀 អូយ! កូដនេះស្មុគស្មាញដល់ថ្នាក់បងវិលមុខគូរអត់ចេញទេ!</div>";
+                container.innerHTML = "<div class='text-red-400 p-6 bg-red-500/10 rounded-xl border border-red-500/20 text-center text-sm'>💀 អូយ! កូដនេះស្មុគស្មាញដល់ថ្នាក់បងវិលមុខគូរអត់ចេញទេ!</div>";
             }
         });
 
@@ -216,7 +224,7 @@
         }
 
         socket.on('error_occured', (msg) => {
-            Swal.fire({ icon: 'error', title: 'Error', text: msg });
+            Swal.fire({ icon: 'error', title: 'Error', text: msg, background: '#0f172a', color: '#fff' });
             document.getElementById("loading").classList.add("hidden");
             document.getElementById("placeholder").classList.remove("hidden");
             document.getElementById("btnAction").disabled = false;
