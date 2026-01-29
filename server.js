@@ -8,7 +8,9 @@ const { GoogleGenAI } = require("@google/genai");
 const app = express();
 
 // --- ១. រៀបចំ ROUTES សម្រាប់ទំព័រនីមួយៗ ---
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "view/index.html")));
+app.get("/", (req, res) =>
+  res.sendFile(path.join(__dirname, "view/index.html")),
+);
 app.get("/culture", (req, res) =>
   res.sendFile(path.join(__dirname, "view/culture.html")),
 );
@@ -18,6 +20,9 @@ app.get("/visualizer", (req, res) =>
 app.get("/study-buddy", (req, res) => {
   res.sendFile(path.join(__dirname, "view/study-buddy.html"));
 });
+app.get("/kida", (req, res) =>
+  res.sendFile(path.join(__dirname, "view/kida.html")),
+);
 
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
@@ -61,16 +66,17 @@ io.on("connection", (socket) => {
   });
 
   // --- ៣. មុខងារ AI KHMER CULTURE GUIDE ---
-// នៅក្នុង server.js ផ្នែក socket.on("ask_culture", ...)
-socket.on("ask_culture", async (data) => {
+  // នៅក្នុង server.js ផ្នែក socket.on("ask_culture", ...)
+  socket.on("ask_culture", async (data) => {
     const { question, type } = data; // ទាញយកសំណួរ និងប្រភេទ (Brief/Detailed)
-    
-    try {
-        const lengthInstruction = type === "detailed" 
-            ? "Provide a comprehensive, deep-dive explanation with historical context and specific details." 
-            : "Make it very short, punchy, and highlight only the most important facts.";
 
-        const prompt = `
+    try {
+      const lengthInstruction =
+        type === "detailed"
+          ? "Provide a comprehensive, deep-dive explanation with historical context and specific details."
+          : "Make it very short, punchy, and highlight only the most important facts.";
+
+      const prompt = `
         You are a Khmer Culture Expert specializing in Angkor Wat and traditional arts.
         Task: Answer this question: "${question}"
         
@@ -80,16 +86,19 @@ socket.on("ask_culture", async (data) => {
         GUARDRAIL: If the question is NOT about Khmer culture, politely refuse in a funny way.
         `;
 
-        const result = await client.models.generateContent({
-            model: "gemini-2.5-flash", // ប្រើម៉ូដែល Gemini 2.5 ដែលប្អូនមាន
-            contents: [{ role: "user", parts: [{ text: prompt }] }],
-        });
+      const result = await client.models.generateContent({
+        model: "gemini-2.5-flash", // ប្រើម៉ូដែល Gemini 2.5 ដែលប្អូនមាន
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+      });
 
-        socket.emit("culture_result", { response: result.text || result.candidates?.[0]?.content?.parts?.[0]?.text });
+      socket.emit("culture_result", {
+        response:
+          result.text || result.candidates?.[0]?.content?.parts?.[0]?.text,
+      });
     } catch (e) {
-        socket.emit("error_occured", e.message);
+      socket.emit("error_occured", e.message);
     }
-});
+  });
 
   // --- ៤. មុខងារ AI LOGIC VISUALIZER (Mermaid.js) ---
   socket.on("visualize_logic", async (data) => {
@@ -113,12 +122,12 @@ socket.on("ask_culture", async (data) => {
   });
 
   // --- ៥. មុខងារ AI MENTAL HEALTH JOURNAL ---
-socket.on("study_assist", async (data) => {
-  const { content } = data;
-  try {
-    console.log("📚 AI កំពុងរៀបចំមេរៀនឱ្យប្អូន...");
-    
-    const prompt = `
+  socket.on("study_assist", async (data) => {
+    const { content } = data;
+    try {
+      console.log("📚 AI កំពុងរៀបចំមេរៀនឱ្យប្អូន...");
+
+      const prompt = `
       You are a brilliant and helpful Khmer Study Companion. 
       Analyze this educational content: "${content}"
 
@@ -139,18 +148,52 @@ socket.on("study_assist", async (data) => {
       }
     `;
 
-    // ប្រើម៉ូដែល Gemini 2.5 Flash ដែលប្អូនបានឆែកឃើញពីមុន
-    const result = await client.models.generateContent({
-      model: "gemini-2.5-flash", 
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-    });
+      // ប្រើម៉ូដែល Gemini 2.5 Flash ដែលប្អូនបានឆែកឃើញពីមុន
+      const result = await client.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+      });
 
-    const response = JSON.parse(result.text.replace(/```json|```/g, "").trim());
-    socket.emit("study_result", response);
-  } catch (error) {
-    
-    socket.emit("error_occured", "AI វិលមុខនឹងមេរៀនបន្តិចហើយ! " + error.message);
-  }
+      const response = JSON.parse(
+        result.text.replace(/```json|```/g, "").trim(),
+      );
+      socket.emit("study_result", response);
+    } catch (error) {
+      socket.emit(
+        "error_occured",
+        "AI វិលមុខនឹងមេរៀនបន្តិចហើយ! " + error.message,
+      );
+    }
+  });
+socket.on("ask_kida", async (data) => {
+    const { userQuery, pages } = data;
+    try {
+        const context = pages.map(p => `[PAGE_${p.page}]: ${p.text}`).join("\n\n");
+
+        const prompt = `
+            You are K-IDA. Use the following context to answer.
+            CONTEXT: ${context}
+            QUESTION: "${userQuery}"
+
+            STRICT OUTPUT RULES:
+            - ALWAYS answer in Khmer.
+            - Return ONLY a raw JSON object with this structure:
+            {
+              "answer": "ចម្លើយជាភាសាខ្មែរបែប Senior Developer",
+              "page_found": "ទំព័រទី X" 
+            }
+        `;
+
+        const result = await client.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+        });
+
+        const cleanJson = result.text.replace(/```json|```/g, "").trim();
+        socket.emit("kida_result", JSON.parse(cleanJson)); // បោះ JSON ទៅ Frontend
+    } catch (e) {
+        socket.emit("error_occured", e.message);
+    }
 });
 });
 

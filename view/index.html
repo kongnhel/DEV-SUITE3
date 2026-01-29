@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/socket.io/socket.io.js"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;700&family=Space+Grotesk:wght@300;500;700&family=Fira+Code&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;700&family=Space+Grotesk:wght@300;500;700&display=swap"
       rel="stylesheet"
     />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -28,7 +28,6 @@
         color: #e2e8f0;
         overflow-x: hidden;
       }
-
       #neural-bg {
         position: fixed;
         top: 0;
@@ -36,15 +35,13 @@
         width: 100%;
         height: 100%;
         z-index: -1;
-        opacity: 0.2; /* Reduced for better performance on mobile */
+        opacity: 0.2;
       }
-
       .nav-glass {
         background: rgba(15, 23, 42, 0.9);
         backdrop-filter: blur(20px);
         border-bottom: 1px solid rgba(0, 242, 255, 0.1);
       }
-
       .nav-link {
         position: relative;
         color: #94a3b8;
@@ -53,27 +50,22 @@
       .nav-link.active {
         color: var(--primary);
       }
-
       .neural-card {
         background: rgba(15, 23, 42, 0.6);
         backdrop-filter: blur(16px);
         border: 1px solid rgba(0, 242, 255, 0.15);
-        border-radius: 20px; /* Smaller radius for mobile */
+        border-radius: 24px;
+        transition: all 0.4s ease;
       }
-      @media (min-width: 768px) {
-        .neural-card { border-radius: 32px; }
+      .neural-card:hover {
+        border-color: var(--primary);
+        box-shadow: 0 0 30px rgba(0, 242, 255, 0.05);
       }
-
       .big-input {
         background: rgba(0, 0, 0, 0.4) !important;
         border: 1px solid rgba(255, 255, 255, 0.05) !important;
-        font-size: 1rem !important; 
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.4s ease;
       }
-      @media (min-width: 768px) {
-        .big-input { font-size: 1.125rem !important; }
-      }
-
       .shimmer-text {
         background: linear-gradient(90deg, #fff, var(--primary), #fff);
         background-size: 200% auto;
@@ -81,118 +73,234 @@
         -webkit-text-fill-color: transparent;
         animation: shine 4s linear infinite;
       }
-      @keyframes shine { to { background-position: 200% center; } }
-
-      /* Hide scrollbar but keep functionality */
-      .no-scrollbar::-webkit-scrollbar { display: none; }
-      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      @keyframes shine {
+        to {
+          background-position: 200% center;
+        }
+      }
+      .btn-neural {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+      }
     </style>
   </head>
 
   <body class="min-h-screen">
     <canvas id="neural-bg"></canvas>
 
-    <nav class="sticky top-0 z-[100] nav-glass px-4 py-3 md:px-6 md:py-4">
+    <nav class="sticky top-0 z-[100] nav-glass px-6 py-4">
       <div class="max-w-7xl mx-auto flex justify-between items-center">
-        <div class="flex items-center gap-2 md:gap-3 cursor-pointer" onclick="window.location.href = '/'">
-          <div class="h-8 w-8 md:h-10 md:w-10 rounded-lg md:rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg">
-            <span class="text-black font-black text-lg md:text-xl italic">AI</span>
+        <div
+          class="flex items-center gap-3 cursor-pointer"
+          onclick="window.location.href = '/'"
+        >
+          <div
+            class="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center"
+          >
+            <span class="text-black font-black text-xl italic">AI</span>
           </div>
-          <h1 class="text-lg md:text-xl font-black tracking-tighter shimmer-text">DEV SUITE</h1>
+          <h1 class="text-xl font-black tracking-tighter shimmer-text">
+            DEV SUITE
+          </h1>
         </div>
-
+        <div
+          class="hidden md:flex gap-10 text-[10px] font-bold uppercase tracking-[0.2em]"
+        >
+          <a href="/" class="nav-link active">Reviewer</a>
+          <a href="/culture" class="nav-link">Culture</a>
+          <a href="/visualizer" class="nav-link">Visualizer</a>
+          <a href="/study-buddy" class="nav-link">Study Buddy</a>
+          <a href="/kida" class="nav-link">K-IDA</a>
+        </div>
         <div class="flex items-center gap-2">
-          <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span class="text-[8px] md:text-[9px] text-emerald-400 font-mono">CORE_ONLINE</span>
+          <span class="h-2 w-2 rounded-full bg-cyan-500 animate-pulse"></span>
+          <span class="text-[9px] text-cyan-400 font-mono"
+            >NEURAL_STATUS: EVOLVING</span
+          >
         </div>
-      </div>
-      
-      <div class="flex md:hidden gap-5 mt-3 overflow-x-auto no-scrollbar pb-1 text-[10px] font-bold uppercase tracking-widest">
-        <a href="/" class="text-cyan-400 border-b border-cyan-400">Reviewer</a>
-        <a href="/culture" class="text-slate-400">Culture</a>
-        <a href="/visualizer" class="text-slate-400">Visualizer</a>
-        <a href="/study-buddy" class="text-slate-400">Study Buddy</a>
-      </div>
-      
-      <div class="hidden md:flex justify-center gap-10 text-[10px] font-bold uppercase tracking-[0.2em] mt-[-20px]">
-        <a href="/" class="nav-link active">Reviewer</a>
-        <a href="/culture" class="nav-link">Culture</a>
-        <a href="/visualizer" class="nav-link">Visualizer</a>
-        <a href="/study-buddy" class="nav-link">Study Buddy</a>
       </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto p-4 md:p-10">
-      <header class="text-center mb-10 md:mb-16">
-        <h2 class="text-5xl md:text-8xl font-black tracking-tighter shimmer-text italic uppercase">
-          AI Reviewer
+    <main class="max-w-7xl mx-auto p-6 md:p-10">
+      <header class="text-center mb-16">
+        <h2
+          class="text-7xl md:text-9xl font-black tracking-tighter shimmer-text italic uppercase"
+        >
+          Evolution
         </h2>
-        <p class="mt-2 md:mt-4 text-slate-500 font-mono tracking-[0.3em] md:tracking-[0.5em] text-[8px] md:text-[10px] uppercase">
-          Neural Diagnostic Environment
+        <p
+          class="mt-4 text-cyan-500/60 font-mono tracking-[0.5em] text-[10px] uppercase"
+        >
+          Where Logic Meets Empathy
         </p>
       </header>
 
-      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 md:gap-10">
-        <section class="xl:col-span-6 space-y-6 md:space-y-8">
-          <div class="neural-card p-6 md:p-10">
-            <div class="flex items-center gap-3 mb-6 md:mb-8">
-              <div class="h-4 w-1 bg-cyan-500 rounded-full"></div>
-              <h3 class="text-xs md:text-sm font-black text-slate-400 uppercase tracking-widest">Workspace Input</h3>
-            </div>
+      <section class="mb-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="neural-card p-10 group">
+          <div class="text-4xl mb-6 group-hover:scale-110 transition">😭</div>
+          <h3
+            class="text-cyan-400 font-black text-sm uppercase tracking-widest mb-4"
+          >
+            The Empathy Engine
+          </h3>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            ប្អូនហត់នឹងកូដ Error មែនទេ? AI របស់យើងមិនត្រឹមតែកែសម្រួលកូដទេ តែវា
+            "យល់" ពីអារម្មណ៍ឈឺចាប់របស់ប្អូន
+            និងផ្ដល់នូវការលើកទឹកចិត្តបែបកំប្លែងៗ។
+          </p>
+        </div>
+        <div class="neural-card p-10 group">
+          <div class="text-4xl mb-6 group-hover:scale-110 transition">⚡</div>
+          <h3
+            class="text-purple-400 font-black text-sm uppercase tracking-widest mb-4"
+          >
+            Instant Evolution
+          </h3>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            ប្ដូរពីកូដដែល "ងាប់" មកជាកូដដែល "រស់" ក្នុងរយៈពេលមិនដល់ ៥ វិនាទី។
+            ការវិភាគកម្រិត Senior Developer ជួយឱ្យប្អូនក្លាយជាអាជីពភ្លាមៗ។
+          </p>
+        </div>
+        <div class="neural-card p-10 group">
+          <div class="text-4xl mb-6 group-hover:scale-110 transition">🎯</div>
+          <h3
+            class="text-emerald-400 font-black text-sm uppercase tracking-widest mb-4"
+          >
+            Zero Guesswork
+          </h3>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            ឈប់អង្គុយស្មានពីកំហុស! Diagnostic Summary
+            របស់យើងនឹងវះកាត់កូដរបស់ប្អូន ដើម្បីបង្ហាញពីបញ្ហាពិតប្រាកដ
+            និងវិធីដោះស្រាយដ៏ល្អបំផុត។
+          </p>
+        </div>
+      </section>
 
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-10">
+        <section class="xl:col-span-6 space-y-8">
+          <div class="neural-card p-10">
+            <div class="flex items-center gap-3 mb-8">
+              <div class="h-4 w-1 bg-cyan-500 rounded-full"></div>
+              <h3
+                class="text-sm font-black text-slate-400 uppercase tracking-widest"
+              >
+                Connect to Neural Hub
+              </h3>
+            </div>
             <div class="space-y-6">
               <div>
-                <label class="text-[9px] md:text-[10px] font-bold text-cyan-500/60 uppercase tracking-widest mb-2 block ml-1">User Intent / Sentiment</label>
-                <textarea id="userComment" class="w-full big-input rounded-2xl md:rounded-3xl p-4 md:p-6 h-28 md:h-40 outline-none resize-none" placeholder="ឧទាហរណ៍៖ កូដនេះសរសេរទាំងឈឺក្បាល..."></textarea>
+                <label
+                  class="text-[10px] font-bold text-cyan-500/60 uppercase tracking-widest mb-2 block ml-1"
+                  >How do you feel today?</label
+                >
+                <textarea
+                  id="userComment"
+                  class="w-full big-input rounded-3xl p-6 h-40 outline-none resize-none text-white"
+                  placeholder="រៀបរាប់ពីការឈឺចាប់ ឬបញ្ហាកូដរបស់ប្អូននៅទីនេះ..."
+                ></textarea>
               </div>
-
               <div>
-                <label class="text-[9px] md:text-[10px] font-bold text-cyan-500/60 uppercase tracking-widest mb-2 block ml-1">The Broken Source Code</label>
-                <div class="relative group">
-                  <textarea id="code" class="w-full h-80 md:h-[550px] big-input rounded-2xl md:rounded-3xl p-4 md:p-8 outline-none font-mono text-sm md:text-base" placeholder="// Paste your code here..."></textarea>
-                  <div class="absolute bottom-4 right-6 text-[8px] md:text-[10px] font-mono text-slate-700 pointer-events-none hidden sm:block">UTF-8 SOURCE_UNIT</div>
-                </div>
+                <label
+                  class="text-[10px] font-bold text-cyan-500/60 uppercase tracking-widest mb-2 block ml-1"
+                  >Drop the Source Code</label
+                >
+                <textarea
+                  id="code"
+                  class="w-full h-[500px] big-input rounded-3xl p-8 outline-none font-mono text-sm text-cyan-50"
+                  placeholder="// Paste your broken logic here..."
+                ></textarea>
               </div>
-
-              <button onclick="sendCode()" id="btnSend" class="w-full py-4 md:py-6 rounded-2xl md:rounded-3xl font-black text-base md:text-lg text-black bg-cyan-400 hover:bg-cyan-300 active:scale-95 transition-all shadow-lg uppercase tracking-widest flex justify-center items-center gap-3">
-                <span>Execute Neural Link</span>
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2.5" /></svg>
+              <button
+                onclick="sendCode()"
+                id="btnSend"
+                class="w-full py-6 rounded-3xl font-black text-lg text-black btn-neural hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_40px_rgba(0,242,255,0.3)] uppercase tracking-widest flex justify-center items-center gap-3"
+              >
+                <span>Engage AI Brain</span>
+                <svg
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2.5" />
+                </svg>
               </button>
             </div>
           </div>
         </section>
 
-        <section class="xl:col-span-6" aria-labelledby="ai-output-heading">
-          <div id="loading" class="hidden neural-card p-20 md:p-40 flex flex-col items-center justify-center">
-            <div class="w-12 h-12 md:w-20 md:h-20 border-2 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin"></div>
-            <p class="mt-6 text-cyan-500 font-mono text-[8px] md:text-[10px] tracking-widest animate-pulse uppercase">Analyzing_Logic...</p>
+        <section class="xl:col-span-6">
+          <div
+            id="loading"
+            class="hidden neural-card p-40 flex flex-col items-center justify-center"
+          >
+            <div
+              class="w-20 h-20 border-2 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin"
+            ></div>
+            <p
+              class="mt-8 text-cyan-500 font-mono text-[10px] tracking-widest animate-pulse uppercase"
+            >
+              Syncing_Logic...
+            </p>
           </div>
 
-          <div id="aiSection" class="hidden space-y-6 md:space-y-8 animate-in fade-in duration-500">
-            <div class="neural-card p-6 md:p-10 border-l-4 md:border-l-8 border-cyan-500">
-              <div id="aiMood" class="text-[8px] md:text-[10px] font-black tracking-[0.2em] md:tracking-[0.3em] uppercase mb-3 text-cyan-400"></div>
-              <div id="aiJoke" class="text-xl md:text-4xl font-light text-white italic leading-tight"></div>
+          <div
+            id="aiSection"
+            class="hidden space-y-8 animate-in fade-in duration-700"
+          >
+            <div
+              class="neural-card p-10 border-l-8 border-cyan-500 bg-cyan-500/5"
+            >
+              <div
+                id="aiMood"
+                class="text-[10px] font-black tracking-[0.3em] uppercase mb-4 text-cyan-400"
+              ></div>
+              <div
+                id="aiJoke"
+                class="text-3xl font-light text-white italic leading-tight"
+              ></div>
             </div>
-
-            <div class="neural-card p-6 md:p-10">
-              <h4 class="text-cyan-500 font-bold uppercase tracking-widest text-[8px] md:text-[10px] mb-4 md:mb-6">Diagnostic Summary</h4>
-              <div id="aiReview" class="text-slate-400 leading-relaxed space-y-4 font-light text-base md:text-xl"></div>
+            <div class="neural-card p-10">
+              <h4
+                class="text-cyan-500 font-bold uppercase tracking-widest text-[10px] mb-6"
+              >
+                Expert Diagnosis
+              </h4>
+              <div
+                id="aiReview"
+                class="text-slate-400 leading-relaxed space-y-4 font-light text-xl"
+              ></div>
             </div>
-
             <div class="neural-card overflow-hidden">
-              <div class="px-6 py-4 md:px-10 md:py-5 bg-white/5 border-b border-white/5 flex justify-between items-center">
-                <span class="text-[8px] md:text-[10px] font-black tracking-widest text-slate-500">OPTIMIZED_VERSION.js</span>
-                <button onclick="copyCode()" class="text-[10px] md:text-xs font-bold text-cyan-400 hover:text-white">COPY_UNIT</button>
+              <div
+                class="px-10 py-5 bg-white/5 border-b border-white/5 flex justify-between items-center"
+              >
+                <span
+                  class="text-[10px] font-black tracking-widest text-slate-500"
+                  >EVOLVED_VERSION.js</span
+                >
+                <button
+                  onclick="copyCode()"
+                  class="text-xs font-bold text-cyan-400 hover:text-white uppercase"
+                >
+                  Copy Success
+                </button>
               </div>
-              <pre class="p-6 md:p-10 overflow-x-auto"><code id="fixedCode" class="language-javascript text-sm md:text-base"></code></pre>
+              <pre
+                class="p-10 overflow-x-auto no-scrollbar"
+              ><code id="fixedCode" class="language-javascript text-base"></code></pre>
             </div>
           </div>
         </section>
       </div>
     </main>
 
-    <footer class="mt-10 md:mt-20 py-10 border-t border-white/5 text-center text-slate-600 text-[8px] md:text-[10px] tracking-widest uppercase">
-        &copy; 2026 AI DevSuite - Secure Coding Protocol
+    <footer class="mt-20 py-10 border-t border-white/5 text-center">
+      <p class="text-slate-600 text-[10px] tracking-widest uppercase mb-2">
+        Developed for Future Innovators
+      </p>
+      <p class="text-cyan-500/40 text-[8px] font-mono">
+        &copy; 2026 AI DEV SUITE PROTOCOL
+      </p>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -207,11 +315,11 @@
         if (!code)
           return Swal.fire({
             icon: "error",
-            title: "Data Missing",
-            text: "ដាក់កូដមកអាអូន កុំទុកប្រអប់ទំនេរ!",
+            title: "Missing Unit",
+            text: "ដាក់កូដមកអាអូន កុំអៀន! 😂",
             background: "#030712",
             color: "#00f2ff",
-            confirmButtonColor: "#00f2ff"
+            confirmButtonColor: "#00f2ff",
           });
 
         loading.classList.remove("hidden");
@@ -229,13 +337,14 @@
         aiSection.classList.remove("hidden");
         btnSend.disabled = false;
         btnSend.style.opacity = "1";
-
-        document.getElementById("aiMood").innerText = "Neural Sentiment: " + res.sentiment;
+        document.getElementById("aiMood").innerText =
+          "Neural Sentiment: " + res.sentiment;
         typeWriter("aiJoke", "“" + res.humorous_response + "”");
-        document.getElementById("aiReview").innerHTML = res.technical_review.replace(/\n/g, "<br>");
-
+        document.getElementById("aiReview").innerHTML =
+          res.technical_review.replace(/\n/g, "<br>");
         const codeContainer = document.getElementById("fixedCode");
-        codeContainer.textContent = res.fixed_code || "// Logic verified. No modifications required.";
+        codeContainer.textContent =
+          res.fixed_code || "// Verified. Your logic is solid.";
         Prism.highlightElement(codeContainer);
       });
 
@@ -247,17 +356,19 @@
           if (i < text.length) {
             el.innerHTML += text.charAt(i);
             i++;
-            setTimeout(type, 20);
+            setTimeout(type, 15);
           }
         }
         type();
       }
 
       function copyCode() {
-        navigator.clipboard.writeText(document.getElementById("fixedCode").textContent);
+        navigator.clipboard.writeText(
+          document.getElementById("fixedCode").textContent,
+        );
         Swal.fire({
           icon: "success",
-          title: "Copied",
+          title: "Code Copied",
           toast: true,
           position: "top-end",
           showConfirmButton: false,
@@ -267,7 +378,7 @@
         });
       }
 
-      // Background Animation (Throttled for performance)
+      // Background Starfield
       const canvas = document.getElementById("neural-bg");
       const ctx = canvas.getContext("2d");
       let dots = [];
@@ -275,30 +386,28 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         dots = [];
-        const count = window.innerWidth < 768 ? 30 : 60;
-        for (let i = 0; i < count; i++)
+        for (let i = 0; i < 50; i++)
           dots.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
           });
       }
       function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#00f2ff";
-        ctx.strokeStyle = "rgba(0,242,255,0.05)";
+        ctx.strokeStyle = "rgba(0,242,255,0.03)";
         dots.forEach((d) => {
           d.x += d.vx;
           d.y += d.vy;
           if (d.x < 0 || d.x > canvas.width) d.vx *= -1;
           if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
           ctx.beginPath();
-          ctx.arc(d.x, d.y, 1, 0, Math.PI * 2);
+          ctx.arc(d.x, d.y, 0.8, 0, Math.PI * 2);
           ctx.fill();
           dots.forEach((d2) => {
-            let dist = Math.hypot(d.x - d2.x, d.y - d2.y);
-            if (dist < 150) {
+            if (Math.hypot(d.x - d2.x, d.y - d2.y) < 180) {
               ctx.beginPath();
               ctx.moveTo(d.x, d.y);
               ctx.lineTo(d2.x, d2.y);
