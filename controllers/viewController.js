@@ -29,14 +29,19 @@ exports.getTutor = (req, res) => {
 exports.getHistory = async (req, res) => {
     try {
         const { search, tool } = req.query;
-        let query = {};
+        
+        // ១. បន្ថែមរបាំងការពារ៖ ទាញយក ID របស់ User ដែលកំពុង Login
+        const userId = req.session.userId;
 
-        // ១. បន្ថែម Logic ស្វែងរកតាមពាក្យគន្លឹះ (Search)
+        // ២. កំណត់ឱ្យ Query រកតែ History ណាដែលជារបស់ម្ចាស់ ID នេះប៉ុណ្ណោះ
+        let query = { userId: userId }; 
+
+        // ៣. បន្ថែម Logic ស្វែងរកតាមពាក្យគន្លឹះ (Search)
         if (search) {
-            query.userInput = { $regex: search, $options: "i" }; // "i" គឺរកមិនប្រកាន់អក្សរតូចធំ
+            query.userInput = { $regex: search, $options: "i" };
         }
 
-        // ២. បន្ថែម Logic ច្រោះតាមប្រភេទ Tool (Filter)
+        // ៤. បន្ថែម Logic ច្រោះតាមប្រភេទ Tool (Filter)
         if (tool && tool !== "ALL") {
             query.toolName = tool;
         }
@@ -49,7 +54,8 @@ exports.getHistory = async (req, res) => {
             theme: "#a855f7",
             history: history,
             currentSearch: search || "",
-            currentTool: tool || "ALL"
+            currentTool: tool || "ALL",
+            user: res.locals.user // បោះទិន្នន័យ User ទៅបង្ហាញរូប Profile
         });
     } catch (err) {
         res.status(500).send("Archive Error: " + err.message);

@@ -45,6 +45,7 @@ module.exports = (socket) => {
         toolName: "CODE_REVIEWER",
         userInput: `Comment: ${userComment} | Code: ${code}`,
         aiResponse: aiData,
+        userId: socket.request.session.userId
       });
 
       socket.emit("review_result", aiData);
@@ -78,6 +79,7 @@ module.exports = (socket) => {
         toolName: "KHMER_CULTURE",
         userInput: question,
         aiResponse: { response: aiResponseText },
+        userId: socket.request.session.userId
       });
 
       socket.emit("culture_result", { response: aiResponseText });
@@ -105,6 +107,7 @@ module.exports = (socket) => {
         toolName: "LOGIC_VISUALIZER",
         userInput: data.code,
         aiResponse: { mermaidCode },
+        userId: socket.request.session.userId
       });
 
       socket.emit("visualize_result", { mermaidCode });
@@ -141,6 +144,7 @@ module.exports = (socket) => {
         toolName: "STUDY_ASSISTANT",
         userInput: content,
         aiResponse: aiData,
+        userId: socket.request.session.userId
       });
 
       socket.emit("study_result", aiData);
@@ -174,6 +178,7 @@ module.exports = (socket) => {
         toolName: "K_IDA",
         userInput: userQuery,
         aiResponse: aiData,
+        userId: socket.request.session.userId
       });
 
       socket.emit("kida_result", aiData);
@@ -222,6 +227,7 @@ module.exports = (socket) => {
         toolName: "AI_TUTOR",
         userInput: topic,
         aiResponse: aiData,
+        userId: socket.request.session.userId
       });
 
       socket.emit("tutor_result", aiData);
