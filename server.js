@@ -1,5 +1,8 @@
+
 require("dotenv").config();
 const express = require("express");
+const connectDB = require('./config/db');
+
 const path = require("path");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -26,3 +29,5 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`🚀 Server is flying at http://localhost:${PORT}`);
 });
+
+connectDB();
