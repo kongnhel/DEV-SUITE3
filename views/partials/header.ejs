@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Royal Cyber 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Freehand&family=Kantumruy+Pro:wght@300;400;700&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --primary-color: <%= theme %>; /* ពណ៌ប្តូរតាម Page */
+            --bg-dark: #0a0a0a;
+        }
+        body {
+            font-family: "Kantumruy Pro", sans-serif;
+            background: var(--bg-dark);
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        .title-khmer {
+            font-family: "Freehand", cursive;
+            background: linear-gradient(to bottom, var(--primary-color), #8b4513);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .active-link {
+            color: var(--primary-color) !important;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        .glow-border {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+        }
+        .glow-border:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+        /* បិទ Scrollbar សម្រាប់ Mobile Nav */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body>
+    <div class="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,#1a1a1a_0%,#050505_100%)] -z-20"></div>
+    <div class="fixed inset-0 opacity-5 -z-10" style="background-image: url('https://www.transparenttextures.com/patterns/pinstriped-suit.png');"></div>
+
+    <nav class="sticky top-0 z-50 border-b border-white/5 bg-black/60 backdrop-blur-xl px-4 py-3">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-black tracking-tighter" style="color: var(--primary-color)">
+                AI DEV SUITE <span class="text-[10px] font-mono opacity-50">V2.6</span>
+            </h1>
+
+            <div class="flex items-center gap-2">
+                <span class="text-[8px] md:text-[10px] font-mono opacity-60">STATUS: ACTIVE</span>
+                <div class="h-2 w-2 rounded-full animate-pulse" style="background-color: var(--primary-color)"></div>
+            </div>
+        </div>
+
+        <div class="flex md:hidden gap-5 mt-4 overflow-x-auto pb-1 text-[10px] font-bold uppercase tracking-widest no-scrollbar">
+            <a href="/" class="<%= pageKey === 'reviewer' ? 'active-link' : 'text-slate-400' %>">Reviewer</a>
+            <a href="/culture" class="<%= pageKey === 'culture' ? 'active-link' : 'text-slate-400' %>">Culture</a>
+            <a href="/visualizer" class="<%= pageKey === 'visualizer' ? 'active-link' : 'text-slate-400' %>">Visualizer</a>
+            <a href="/study-buddy" class="<%= pageKey === 'study' ? 'active-link' : 'text-slate-400' %>">Study</a>
+            <a href="/kida" class="<%= pageKey === 'kida' ? 'active-link' : 'text-slate-400' %>">K-IDA</a>
+            <a href="/tutor" class="<%= pageKey === 'tutor' ? 'active-link' : 'text-slate-400' %>">Tutor</a>
+        </div>
+
+        <div class="hidden md:flex justify-center gap-10 text-xs font-bold uppercase tracking-widest mt-[-20px]">
+            <a href="/" class="<%= pageKey === 'reviewer' ? 'active-link' : 'text-slate-400 hover:text-white' %> transition">Reviewer</a>
+            <a href="/culture" class="<%= pageKey === 'culture' ? 'active-link' : 'text-slate-400 hover:text-white' %> transition">Culture</a>
+            <a href="/visualizer" class="<%= pageKey === 'visualizer' ? 'active-link' : 'text-slate-400 hover:text-white' %> transition">Visualizer</a>
+            <a href="/study-buddy" class="<%= pageKey === 'study' ? 'active-link' : 'text-slate-400 hover:text-white' %> transition">Study Buddy</a>
+            <a href="/kida" class="<%= pageKey === 'kida' ? 'active-link' : 'text-slate-400 hover:text-white' %> transition">K-IDA</a>
+            <a href="/tutor" class="<%= pageKey === 'tutor' ? 'active-link' : 'text-slate-400 hover:text-white' %> transition">Tutor</a>
+        </div>
+    </nav>
